@@ -80,7 +80,7 @@ export const products: Product[] = [
     reviewCount: 156,
     category: "Accessories",
     description: "1080p HD webcam perfect for video calls",
-    created: "2024-01-30T00:00:00.000Z",
+    created: "2025-01-30T00:00:00.000Z",
   },
   {
     id: "7",

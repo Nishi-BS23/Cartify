@@ -63,7 +63,6 @@ const ProductCard = () => {
                                             src={product.image}
                                             alt={product.name}
                                             fill
-                                            style={{ objectFit: "cover" }}
                                             className="rounded-t-lg"
                                         />
                                     </div>

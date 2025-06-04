@@ -88,7 +88,6 @@ export default function CartPage() {
                                             <span className="inline-block px-3 py-1 text-sm font-medium text-green-800 bg-green-100 rounded-full shadow-sm">
                                                 Remaining: {item.product.stock - item.quantity}
                                             </span>
-
                                         </div>
                                     </div>
                                 </div>

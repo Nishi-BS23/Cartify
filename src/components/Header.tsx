@@ -9,7 +9,7 @@ const Header = () => {
     const totalItems = state.cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
     return (
-        <nav className="bg-gray-300 flex justify-between items-center px-12 py-6 sticky top-0 z-50 shadow-md">
+        <nav className="bg-gray-100 flex justify-between items-center px-12 py-6 sticky top-0 z-50 shadow-md">
             <Link href="/" className="flex items-center gap-4">
                 <Image src="/logo.png" alt="Catify Logo" width={40} height={40} />
                 <h1 className="text-xl font-bold">Catify</h1>

@@ -7,11 +7,11 @@ import Image from "next/image";
 import { useState } from "react";
 
 const ProductCard = () => {
-    const { dispatch } = useCart();
+    const { state, dispatch } = useCart();
     const [search, setSearch] = useState("");
     const [sortOption, setSortOption] = useState("");
 
-    const filteredProducts = products
+    const filteredProducts = state.products
         .filter((product: Product) =>
             product.name.toLowerCase().includes(search.toLowerCase())
         )

@@ -1,13 +1,16 @@
 "use client";
+import { products as initialProducts } from "@/lib/products";
 import { CartItem } from "@/types/cart";
 import { Product } from "@/types/product";
 import { createContext, ReactNode, useContext, useReducer } from "react";
 
 interface CartState {
     cartItems: CartItem[];
+    products: Product[];
 }
 const initialState: CartState = {
     cartItems: [],
+    products: initialProducts,
 };
 type Action =
     | { type: "ADD_TO_CART"; product: Product }
@@ -30,8 +33,6 @@ function cartReducer(state: CartState, action: Action): CartState {
             );
             if (item) {
                 const newQuantity = item.quantity + 1;
-                // console.log("New qq", newQuantity);
-                // console.log("item", item.product.stock);
                 if (newQuantity > item.product.stock) {
                     return state;
                 }
@@ -45,6 +46,11 @@ function cartReducer(state: CartState, action: Action): CartState {
                             }
                             : i
                     ),
+                    products: state.products.map((p) =>
+                        p.id === action.product.id ? {
+                            ...p, stock: p.stock - 1,
+                        } : p
+                    ),
                 };
             }
 
@@ -54,24 +60,56 @@ function cartReducer(state: CartState, action: Action): CartState {
                     ...state.cartItems,
                     { product: action.product, quantity: 1 },
                 ],
+                products: state.products.map((p) =>
+                    p.id === action.product.id ? {
+                        ...p, stock: p.stock - 1,
+                    } : p
+                ),
             };
         }
-        case "REMOVE_FROM_CART":
+        case "REMOVE_FROM_CART": {
+            const item = state.cartItems.find((i) => i.product.id === action.id);
+            if (!item) {
+                return state;
+            }
             return {
                 ...state,
                 cartItems: state.cartItems.filter((i) => i.product.id !== action.id),
+                products: state.products.map((p) =>
+                    p.id === action.id ? {
+                        ...p, stock: p.stock + item.quantity,
+                    } : p
+                ),
             };
-        case "ADJUST_QUANTITY":
+        }
+
+        case "ADJUST_QUANTITY": {
+            const item = state.cartItems.find((i) => i.product.id === action.id);
+            const product = state.products.find((p) => p.id === action.id);
+            if (!item || !product) {
+                return state;
+            }
+            console.log("Action quantity : ", action.quantity);
+            const quantityDiff = action.quantity - item.quantity;
+            if (action.quantity > product.stock + item.quantity) {
+                return state;
+            }
             return {
                 ...state,
                 cartItems: state.cartItems.map((i) => {
                     if (i.product.id === action.id) {
-                        const clampedQuantity = Math.min(action.quantity, i.product.stock);
-                        return { ...i, quantity: clampedQuantity };
+                        return { ...i, quantity: action.quantity };
                     }
                     return i;
                 }),
+                products: state.products.map((p) =>
+                    p.id === action.id ? {
+                        ...p, stock: p.stock - quantityDiff,
+                    } : p
+                ),
             };
+        }
+
         default:
             return state;
     }

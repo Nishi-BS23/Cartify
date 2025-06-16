@@ -69,7 +69,11 @@ export default function CartPage() {
                                                         item.quantity - 1
                                                     )
                                                 }
-                                                className="px-2 py-1 bg-gray-200 rounded"
+                                                disabled={item.quantity === 1}
+                                                className={`px-2 py-1 rounded transition-colors ${item.quantity === 1
+                                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-70"
+                                                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                                                    }`}
                                             >
                                                 -
                                             </button>
@@ -81,7 +85,11 @@ export default function CartPage() {
                                                         item.quantity + 1
                                                     )
                                                 }
-                                                className="px-2 py-1 bg-gray-200 rounded"
+                                                disabled={item.product.stock === item.quantity}
+                                                className={`px-2 py-1 rounded transition-colors ${item.product.stock === item.quantity
+                                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-70"
+                                                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                                                    }`}
                                             >
                                                 +
                                             </button>

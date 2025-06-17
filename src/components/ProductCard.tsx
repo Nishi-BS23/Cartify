@@ -1,6 +1,5 @@
 "use client";
 import { useCart } from "@/context/CartContext";
-import { products } from "@/lib/products";
 import { Product } from "@/types/product";
 import { ShoppingCart, Star } from "lucide-react";
 import Image from "next/image";

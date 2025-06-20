@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="flex flex-col justify-center items-center p-10">
       <h2 className="text-3xl font-semibold text-gray-800 mb-4">
-        Welcome to <span className="text-red-600">Catify</span>
+        Welcome to <span className="text-red-600">Cartify</span>
       </h2>
       <Link
         href="/products"

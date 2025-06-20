@@ -6,7 +6,10 @@ import Link from "next/link";
 
 const Header = () => {
     const { state } = useCart();
-    const totalItems = state.cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    const totalItems = state.cartItems.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+    );
 
     return (
         <nav className="bg-gray-100 flex justify-between items-center px-12 py-6 sticky top-0 z-50 shadow-md">

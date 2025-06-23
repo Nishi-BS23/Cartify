@@ -2,16 +2,14 @@
 import CartItemPage from "@/components/CartItem";
 import OrderSummary from "@/components/OrderSummary";
 import { useCart } from "@/context/CartContext";
-import { auth0 } from "@/lib/autho0";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
-export default async function CartPage() {
+export default function CartPage() {
     const { state } = useCart();
-    const session = await auth0.getSession();
-    if (!session || !!session?.user) {
-        redirect("/auth/login");
-    }
+    // const session = await auth0.getSession();
+    // // if (!session || !!session?.user) {
+    // //     redirect("/auth/login");
+    // // }
     return (
         <div className="max-w-6xl mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>

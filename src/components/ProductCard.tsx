@@ -1,7 +1,8 @@
 "use client";
+import CustomButton from "@/components/CustomButton";
 import { useCart } from "@/context/CartContext";
 import { Product } from "@/types/product";
-import { ShoppingCart, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import Image from "next/image";
 
 const ProductCard = ({ product }: { product: Product }) => {
@@ -59,17 +60,14 @@ const ProductCard = ({ product }: { product: Product }) => {
                 )}
 
                 <div className="mt-auto pt-4 flex gap-2">
-                    <button
-                        onClick={() => dispatch({ type: "ADD_TO_CART", product })}
+                    <CustomButton
+                        variant="addToCart"
                         disabled={product.stock === 0}
-                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors ${product.stock === 0
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : "bg-[#00C897] hover:bg-[#00b383]"
-                            }`}
+                        onClick={() => dispatch({ type: "ADD_TO_CART", product })}
+                        stock={product.stock}
                     >
-                        <ShoppingCart className="h-4 w-4" />
                         Add to Cart
-                    </button>
+                    </CustomButton>
                 </div>
             </div>
         </div>

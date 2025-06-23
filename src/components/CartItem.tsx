@@ -1,3 +1,4 @@
+import CustomButton from "@/components/CustomButton";
 import { useCart } from "@/context/CartContext";
 import { CartItem } from "@/types/cart";
 import Image from "next/image";
@@ -32,31 +33,26 @@ const CartItemPage = ({ item }: { item: CartItem }) => {
                         ${item.product.price.toFixed(2)}
                     </p>
                     <div className="mt-2 flex items-center space-x-2">
-                        <button
-                            onClick={() =>
-                                handleQuantityChange(item.product.id, item.quantity - 1)
-                            }
+                        <CustomButton
+                            variant="decrement"
                             disabled={item.quantity === 1}
-                            className={`px-2 py-1 rounded transition-colors ${item.quantity === 1
-                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-70"
-                                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                                }`}
+                            productId={item.product.id}
+                            quantity={item.quantity}
+                            handleQuantityChange={handleQuantityChange}
                         >
                             -
-                        </button>
+                        </CustomButton>
                         <span>{item.quantity}</span>
-                        <button
-                            onClick={() =>
-                                handleQuantityChange(item.product.id, item.quantity + 1)
-                            }
+                        <CustomButton
+                            variant="increment"
                             disabled={item.product.stock === item.quantity}
-                            className={`px-2 py-1 rounded transition-colors ${item.product.stock === item.quantity
-                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-70"
-                                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                                }`}
+                            productId={item.product.id}
+                            quantity={item.quantity}
+                            stock={item.product.stock}
+                            handleQuantityChange={handleQuantityChange}
                         >
                             +
-                        </button>
+                        </CustomButton>
                         <span className="inline-block px-3 py-1 text-sm font-medium text-green-800 bg-green-100 rounded-full shadow-sm">
                             Remaining: {item.product.stock - item.quantity}
                         </span>
@@ -67,12 +63,13 @@ const CartItemPage = ({ item }: { item: CartItem }) => {
                 <p className="font-semibold">
                     ${(item.product.price * item.quantity).toFixed(2)}
                 </p>
-                <button
-                    onClick={() => handleRemove(item.product.id)}
-                    className="text-red-500 text-sm mt-1"
+                <CustomButton
+                    variant="remove"
+                    productId={item.product.id}
+                    handleRemove={handleRemove}
                 >
                     ❌
-                </button>
+                </CustomButton>
             </div>
         </div>
     );

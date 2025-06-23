@@ -5,7 +5,7 @@ import { Product } from "@/types/product";
 import { useState } from "react";
 
 const ProductPage = () => {
-    const { state, dispatch } = useCart();
+    const { state } = useCart();
     const [search, setSearch] = useState("");
     const [sortOption, setSortOption] = useState("");
 

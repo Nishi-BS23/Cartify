@@ -4,18 +4,22 @@ import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const Header = () => {
+interface HeaderProps {
+    isLoggedIn: boolean;
+}
+
+const Header = ({ isLoggedIn }: HeaderProps) => {
+    console.log("islll", isLoggedIn)
     const { state } = useCart();
     const totalItems = state.cartItems.reduce(
         (sum, item) => sum + item.quantity,
         0
     );
-
     return (
         <nav className="bg-gray-100 flex justify-between items-center px-12 py-6 sticky top-0 z-50 shadow-md">
             <Link href="/" className="flex items-center gap-4">
-                <Image src="/logo.png" alt="Catify Logo" width={40} height={40} />
-                <h1 className="text-xl font-bold">Catify</h1>
+                <Image src="/logo.png" alt="Cartify Logo" width={40} height={40} />
+                <h1 className="text-xl font-bold">Cartify</h1>
             </Link>
 
             <div className="flex items-center gap-6 px-4 py-2">
@@ -31,6 +35,15 @@ const Header = () => {
                         </span>
                     )}
                 </Link>
+                {isLoggedIn ? (
+                    <Link href="/auth/logout">
+                        <h1 className="hover:underline">Log Out</h1>
+                    </Link>
+                ) : (
+                    <Link href="/auth/login">
+                        <h1 className="hover:underline">Log In</h1>
+                    </Link>
+                )}
             </div>
         </nav>
     );

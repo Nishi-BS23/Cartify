@@ -36,14 +36,11 @@ const Header = ({ isLoggedIn }: HeaderProps) => {
                     )}
                 </Link>
                 {isLoggedIn ? (
-                    <Link href="/auth/logout">
-                        <h1 className="hover:underline">Log Out</h1>
-                    </Link>
+                    <a href="/auth/logout" className="hover:underline">Log Out</a>
                 ) : (
-                    <Link href="/auth/login">
-                        <h1 className="hover:underline">Log In</h1>
-                    </Link>
+                    <a href="/auth/login" className="hover:underline">Log In</a>
                 )}
+
             </div>
         </nav>
     );

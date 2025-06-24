@@ -1,12 +1,6 @@
 import ProductPage from "@/components/Product";
-import { auth0 } from "@/lib/autho0";
-import { redirect } from "next/navigation";
 
-export default async function Product() {
-    const session = await auth0.getSession();
-    // if (!session || !!session?.user) {
-    //     redirect("/auth/login");
-    // }
+export default function Product() {
     return (
         <div className="p-20">
             {/* <SearchSort /> */}

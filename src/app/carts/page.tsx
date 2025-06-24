@@ -6,10 +6,6 @@ import Link from "next/link";
 
 export default function CartPage() {
     const { state } = useCart();
-    // const session = await auth0.getSession();
-    // // if (!session || !!session?.user) {
-    // //     redirect("/auth/login");
-    // // }
     return (
         <div className="max-w-6xl mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>

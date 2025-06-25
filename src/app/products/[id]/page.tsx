@@ -3,13 +3,7 @@ import CustomButton from "@/components/CustomButton";
 import { useCart } from "@/context/CartContext";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
-import { use } from "react";
-
-type Props = {
-    params: {
-        id: string;
-    };
-};
+import { use, useState } from "react";
 
 export default function ProductDetail({
     params,
@@ -27,26 +21,54 @@ export default function ProductDetail({
         notFound();
     }
 
+    // State to track selected attributes
+    const [selectedAttributes, setSelectedAttributes] = useState<{
+        [key: string]: string;
+    }>({});
+
+    // Handle attribute selection
+    const handleAttributeSelect = (attribute: string, value: string) => {
+        console.log("Atrribute --> ", attribute);
+        console.log("Value--->", value);
+        setSelectedAttributes((prev) => ({
+            ...prev,
+            [attribute]: value,
+        }));
+    };
+
+    // Check if all required attributes are selected
+    const areAttributesSelected = () => {
+        const requiredAttributes = Object.keys(product.attributes || {});
+        return requiredAttributes.find((attr) =>
+            selectedAttributes.hasOwnProperty(attr)
+        );
+    };
+
+    // Dispatch ADD_TO_CART with selected attributes
+    const handleAddToCart = () => {
+        console.log("Selected ---> ", selectedAttributes);
+        if (areAttributesSelected()) {
+            dispatch({
+                type: "ADD_TO_CART",
+                product: {
+                    ...product,
+                    selectedAttributes,
+                },
+            });
+            alert("Added to cart!");
+        } else {
+            alert("Please select all options before adding to cart!");
+        }
+    };
+
     return (
         <main className="flex min-h-screen p-6 bg-gray-50">
             <div className="container mx-auto max-w-6xl">
                 <Link
                     href="/products"
-                    className="text-blue-600 hover:text-blue-800 font-medium mb-6 transition-colors flex items-center gap-2"
+                    className="text-blue-600 hover:text-blue-800 font-medium mb-6 flex items-center gap-2"
                 >
-                    <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 19l-7-7 7-7"
-                        />
-                    </svg>
+                    <span className="mr-1 text-lg">&#8592;</span>
                     Back to Products
                 </Link>
 
@@ -128,24 +150,29 @@ export default function ProductDetail({
                                                 key={attribute}
                                                 className="border-b border-gray-200 pb-3 last:border-b-0"
                                             >
-                                                <h3 className="text-base font-medium text-gray-700 mb-2 capitalize">
-                                                    {attribute.replace(/([A-Z])/g, " $1").trim()}
+                                                <h3 className="text-base font-medium text-gray-700 mb-2">
+                                                    {attribute}
                                                 </h3>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {values.map((item, index) => (
+                                                <div className="flex gap-2">
+                                                    {values.map((item) => (
                                                         <button
-                                                            key={index}
-                                                            className={`flex items-center justify-between w-full sm:w-auto px-3 py-2 bg-gray-50 rounded-md shadow-sm hover:bg-gray-100  ${item.quantity > 0
-                                                                ? "cursor-pointer"
+                                                            key={item.value}
+                                                            className={`flex items-center justify-between w-full sm:w-auto px-3 py-2 bg-gray-50 rounded-md hover:bg-gray-100  ${item.quantity > 0
+                                                                ? selectedAttributes[attribute] === item.value
+                                                                    ? "bg-blue-100 border border-blue-500"
+                                                                    : "cursor-pointer"
                                                                 : "cursor-not-allowed opacity-50"
                                                                 }`}
                                                             disabled={item.quantity === 0}
+                                                            onClick={() =>
+                                                                handleAttributeSelect(attribute, item.value)
+                                                            }
                                                         >
                                                             <span className="text-gray-800 text-sm font-medium capitalize">
                                                                 {item.value}
                                                             </span>
                                                             <span
-                                                                className={`ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${item.quantity > 0
+                                                                className={`ml-2 items-center px-2 py-0.5 rounded-full text-xs font-semibold ${item.quantity > 0
                                                                     ? "bg-green-100 text-green-800"
                                                                     : "bg-red-100 text-red-800"
                                                                     }`}
@@ -210,8 +237,9 @@ export default function ProductDetail({
                                 <>
                                     <CustomButton
                                         variant="addToCart"
-                                        onClick={() => dispatch({ type: "ADD_TO_CART", product })}
+                                        onClick={handleAddToCart}
                                         stock={product.stock}
+                                        disabled={!areAttributesSelected()}
                                         className="w-full md:w-auto px-4 py-2 text-base"
                                     >
                                         Add to Cart

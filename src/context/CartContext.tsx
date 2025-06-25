@@ -2,6 +2,7 @@
 import { products as initialProducts } from "@/lib/products";
 import { CartItem } from "@/types/cart";
 import { Product } from "@/types/product";
+import { ProductWithVariant } from "@/types/productWithVarient";
 import { createContext, ReactNode, useContext, useReducer } from "react";
 
 interface CartState {
@@ -13,7 +14,7 @@ const initialState: CartState = {
     products: initialProducts,
 };
 type Action =
-    | { type: "ADD_TO_CART"; product: Product }
+    | { type: "ADD_TO_CART"; product: ProductWithVariant }
     | { type: "REMOVE_FROM_CART"; id: string }
     | { type: "ADJUST_QUANTITY"; id: string; quantity: number };
 
@@ -47,9 +48,12 @@ function cartReducer(state: CartState, action: Action): CartState {
                             : i
                     ),
                     products: state.products.map((p) =>
-                        p.id === action.product.id ? {
-                            ...p, stock: p.stock - 1,
-                        } : p
+                        p.id === action.product.id
+                            ? {
+                                ...p,
+                                stock: p.stock - 1,
+                            }
+                            : p
                     ),
                 };
             }
@@ -61,9 +65,12 @@ function cartReducer(state: CartState, action: Action): CartState {
                     { product: action.product, quantity: 1 },
                 ],
                 products: state.products.map((p) =>
-                    p.id === action.product.id ? {
-                        ...p, stock: p.stock - 1,
-                    } : p
+                    p.id === action.product.id
+                        ? {
+                            ...p,
+                            stock: p.stock - 1,
+                        }
+                        : p
                 ),
             };
         }
@@ -76,9 +83,12 @@ function cartReducer(state: CartState, action: Action): CartState {
                 ...state,
                 cartItems: state.cartItems.filter((i) => i.product.id !== action.id),
                 products: state.products.map((p) =>
-                    p.id === action.id ? {
-                        ...p, stock: p.stock + item.quantity,
-                    } : p
+                    p.id === action.id
+                        ? {
+                            ...p,
+                            stock: p.stock + item.quantity,
+                        }
+                        : p
                 ),
             };
         }
@@ -103,9 +113,12 @@ function cartReducer(state: CartState, action: Action): CartState {
                     return i;
                 }),
                 products: state.products.map((p) =>
-                    p.id === action.id ? {
-                        ...p, stock: p.stock - quantityDiff,
-                    } : p
+                    p.id === action.id
+                        ? {
+                            ...p,
+                            stock: p.stock - quantityDiff,
+                        }
+                        : p
                 ),
             };
         }

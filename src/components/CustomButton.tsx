@@ -10,6 +10,7 @@ interface ButtonProps {
     | "increment"
     | "remove"
     | "addToCart"
+    | "buyNow"
     | "checkout"
     | "default";
     className?: string;
@@ -42,8 +43,9 @@ export default function CustomButton({
                     }`;
             case "remove":
                 return "text-red-500 text-sm mt-1";
+            case "buyNow":
             case "addToCart":
-                return `flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors ${disabled
+                return `w-fulll md:mx-auto flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors ${disabled
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-[#00C897] hover:bg-[#00b383]"
                     }`;

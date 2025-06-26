@@ -61,6 +61,24 @@ export default function ProductDetail({
         }
     };
 
+    // Helper to get cart quantity for a product+attribute
+    const getCartQuantityForAttribute = (
+        productId: string,
+        attribute: string,
+        value: string
+    ) => {
+        return state.cartItems.reduce((sum, item) => {
+            if (
+                item.product.id === productId &&
+                item.product.selectedAttributes &&
+                item.product.selectedAttributes[attribute] === value
+            ) {
+                return sum + item.quantity;
+            }
+            return sum;
+        }, 0);
+    };
+
     return (
         <main className="flex min-h-screen p-6 bg-gray-50">
             <div className="container mx-auto max-w-6xl">
@@ -154,33 +172,45 @@ export default function ProductDetail({
                                                     {attribute}
                                                 </h3>
                                                 <div className="flex gap-2">
-                                                    {values.map((item) => (
-                                                        <button
-                                                            key={item.value}
-                                                            className={`flex items-center justify-between w-full sm:w-auto px-3 py-2 bg-gray-50 rounded-md hover:bg-gray-100  ${item.quantity > 0
-                                                                ? selectedAttributes[attribute] === item.value
-                                                                    ? "bg-blue-100 border border-blue-500"
-                                                                    : "cursor-pointer"
-                                                                : "cursor-not-allowed opacity-50"
-                                                                }`}
-                                                            disabled={item.quantity === 0}
-                                                            onClick={() =>
-                                                                handleAttributeSelect(attribute, item.value)
-                                                            }
-                                                        >
-                                                            <span className="text-gray-800 text-sm font-medium capitalize">
-                                                                {item.value}
-                                                            </span>
-                                                            <span
-                                                                className={`ml-2 items-center px-2 py-0.5 rounded-full text-xs font-semibold ${item.quantity > 0
-                                                                    ? "bg-green-100 text-green-800"
-                                                                    : "bg-red-100 text-red-800"
+                                                    {values.map((item) => {
+                                                        const cartQty = getCartQuantityForAttribute(
+                                                            product.id,
+                                                            attribute,
+                                                            item.value
+                                                        );
+                                                        const displayQty = Math.max(
+                                                            item.quantity - cartQty,
+                                                            0
+                                                        );
+                                                        return (
+                                                            <button
+                                                                key={item.value}
+                                                                className={`flex items-center justify-between w-full sm:w-auto px-3 py-2 bg-gray-50 rounded-md hover:bg-gray-100  ${displayQty > 0
+                                                                        ? selectedAttributes[attribute] ===
+                                                                            item.value
+                                                                            ? "bg-blue-100 border border-blue-500"
+                                                                            : "cursor-pointer"
+                                                                        : "cursor-not-allowed opacity-50"
                                                                     }`}
+                                                                disabled={displayQty === 0}
+                                                                onClick={() =>
+                                                                    handleAttributeSelect(attribute, item.value)
+                                                                }
                                                             >
-                                                                {item.quantity} left
-                                                            </span>
-                                                        </button>
-                                                    ))}
+                                                                <span className="text-gray-800 text-sm font-medium capitalize">
+                                                                    {item.value}
+                                                                </span>
+                                                                <span
+                                                                    className={`ml-2 items-center px-2 py-0.5 rounded-full text-xs font-semibold ${displayQty > 0
+                                                                            ? "bg-green-100 text-green-800"
+                                                                            : "bg-red-100 text-red-800"
+                                                                        }`}
+                                                                >
+                                                                    {displayQty} left
+                                                                </span>
+                                                            </button>
+                                                        );
+                                                    })}
                                                 </div>
                                             </div>
                                         )

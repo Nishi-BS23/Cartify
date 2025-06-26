@@ -1,6 +1,6 @@
-import { Product } from "@/types/product";
+import { ProductWithVariant } from "@/types/productWithVarient";
 
 export interface CartItem {
-  product: Product;
+  product: ProductWithVariant;
   quantity: number;
 }

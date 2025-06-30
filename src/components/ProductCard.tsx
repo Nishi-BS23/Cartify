@@ -1,5 +1,4 @@
 "use client";
-import CustomButton from "@/components/CustomButton";
 import { useCart } from "@/context/CartContext";
 import { Product } from "@/types/product";
 import { Star } from "lucide-react";
@@ -62,14 +61,14 @@ const ProductCard = ({ product }: { product: Product }) => {
                     )}
 
                     <div className="mt-auto pt-4 flex gap-2">
-                        <CustomButton
+                        {/* <CustomButton
                             variant="addToCart"
                             disabled={product.stock === 0}
                             onClick={() => dispatch({ type: "ADD_TO_CART", product })}
                             stock={product.stock}
                         >
                             Add to Cart
-                        </CustomButton>
+                        </CustomButton> */}
                     </div>
                 </div>
             </div>

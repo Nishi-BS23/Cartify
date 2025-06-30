@@ -1,15 +1,17 @@
 "use client";
 import CustomButton from "@/components/CustomButton";
+import ProductAttributes from "@/components/ProductAttributes";
+import ProductReviews from "@/components/ProductReviews";
 import { useCart } from "@/context/CartContext";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
 import { use, useState } from "react";
 
-export default function ProductDetail({
-    params,
-}: {
+interface ProductDetailProps {
     params: Promise<{ id: string }>;
-}) {
+}
+
+export default function ProductDetail({ params }: ProductDetailProps) {
     const { state, dispatch } = useCart();
     const router = useRouter();
 
@@ -39,9 +41,7 @@ export default function ProductDetail({
     // Check if all required attributes are selected
     const areAttributesSelected = () => {
         const requiredAttributes = Object.keys(product.attributes || {});
-        return requiredAttributes.find((attr) =>
-            selectedAttributes.hasOwnProperty(attr)
-        );
+        return requiredAttributes.find((attr) => selectedAttributes.hasOwnProperty(attr));
     };
 
     // Dispatch ADD_TO_CART with selected attributes
@@ -62,11 +62,7 @@ export default function ProductDetail({
     };
 
     // Helper to get cart quantity for a product+attribute
-    const getCartQuantityForAttribute = (
-        productId: string,
-        attribute: string,
-        value: string
-    ) => {
+    const getCartQuantityForAttribute = (productId: string, attribute: string, value: string) => {
         return state.cartItems.reduce((sum, item) => {
             if (
                 item.product.id === productId &&
@@ -86,7 +82,7 @@ export default function ProductDetail({
                     href="/products"
                     className="text-blue-600 hover:text-blue-800 font-medium mb-6 flex items-center gap-2"
                 >
-                    <span className="mr-1 text-lg">&#8592;</span>
+                    <span className="mr-1 text-lg">←</span>
                     Back to Products
                 </Link>
 
@@ -106,30 +102,18 @@ export default function ProductDetail({
                     {/* Product Details */}
                     <div className="p-6 space-y-4">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
-                                {product.name}
-                            </h1>
+                            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{product.name}</h1>
                             <p className="text-gray-600 mt-1 text-base">{product.category}</p>
                         </div>
 
                         <div className="flex items-center gap-3">
-                            <span className="text-3xl font-bold text-gray-900">
-                                ${product.price}
-                            </span>
+                            <span className="text-3xl font-bold text-gray-900">${product.price}</span>
                             {product.originalPrice && (
-                                <span className="text-lg text-gray-500 line-through">
-                                    ${product.originalPrice}
-                                </span>
+                                <span className="text-lg text-gray-500 line-through">${product.originalPrice}</span>
                             )}
                             {product.originalPrice && (
                                 <span className="text-green-600 font-semibold">
-                                    -
-                                    {Math.round(
-                                        ((product.originalPrice - product.price) /
-                                            product.originalPrice) *
-                                        100
-                                    )}
-                                    % Off
+                                    -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% Off
                                 </span>
                             )}
                         </div>
@@ -138,128 +122,26 @@ export default function ProductDetail({
                             <p className="text-gray-700 text-sm">
                                 Stock:{" "}
                                 <span
-                                    className={
-                                        product.stock >= 1
-                                            ? "text-green-600 font-medium"
-                                            : "text-red-600 font-medium"
-                                    }
+                                    className={product.stock >= 1 ? "text-green-600 font-medium" : "text-red-600 font-medium"}
                                 >
                                     {product.stock} available
                                 </span>
-                                {product.stock <= 2 && (
-                                    <span className="text-red-600 ml-1">Almost sold out!</span>
-                                )}
+                                {product.stock <= 2 && <span className="text-red-600 ml-1">Almost sold out!</span>}
                             </p>
                         </div>
 
                         <p className="text-gray-700 text-sm">{product.description}</p>
 
-                        {/* Attributes */}
-                        <div>
-                            <h2 className="text-xl font-semibold text-gray-800 mb-3">
-                                Select Options
-                            </h2>
-                            {product.attributes &&
-                                Object.keys(product.attributes).length > 0 ? (
-                                <div className="space-y-4">
-                                    {Object.entries(product.attributes).map(
-                                        ([attribute, values]) => (
-                                            <div
-                                                key={attribute}
-                                                className="border-b border-gray-200 pb-3 last:border-b-0"
-                                            >
-                                                <h3 className="text-base font-medium text-gray-700 mb-2">
-                                                    {attribute}
-                                                </h3>
-                                                <div className="flex gap-2">
-                                                    {values.map((item) => {
-                                                        const cartQty = getCartQuantityForAttribute(
-                                                            product.id,
-                                                            attribute,
-                                                            item.value
-                                                        );
-                                                        const displayQty = Math.max(
-                                                            item.quantity - cartQty,
-                                                            0
-                                                        );
-                                                        return (
-                                                            <button
-                                                                key={item.value}
-                                                                className={`flex items-center justify-between w-full sm:w-auto px-3 py-2 bg-gray-50 rounded-md hover:bg-gray-100  ${displayQty > 0
-                                                                        ? selectedAttributes[attribute] ===
-                                                                            item.value
-                                                                            ? "bg-blue-100 border border-blue-500"
-                                                                            : "cursor-pointer"
-                                                                        : "cursor-not-allowed opacity-50"
-                                                                    }`}
-                                                                disabled={displayQty === 0}
-                                                                onClick={() =>
-                                                                    handleAttributeSelect(attribute, item.value)
-                                                                }
-                                                            >
-                                                                <span className="text-gray-800 text-sm font-medium capitalize">
-                                                                    {item.value}
-                                                                </span>
-                                                                <span
-                                                                    className={`ml-2 items-center px-2 py-0.5 rounded-full text-xs font-semibold ${displayQty > 0
-                                                                            ? "bg-green-100 text-green-800"
-                                                                            : "bg-red-100 text-red-800"
-                                                                        }`}
-                                                                >
-                                                                    {displayQty} left
-                                                                </span>
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        )
-                                    )}
-                                </div>
-                            ) : (
-                                <p className="text-gray-500 text-sm">
-                                    No attributes available.
-                                </p>
-                            )}
-                        </div>
+                        {/* Attributes Component */}
+                        <ProductAttributes
+                            product={product}
+                            selectedAttributes={selectedAttributes}
+                            handleAttributeSelect={handleAttributeSelect}
+                            getCartQuantityForAttribute={getCartQuantityForAttribute}
+                        />
 
-                        {/* Reviews */}
-                        <div>
-                            <h2 className="text-xl font-semibold text-gray-800 mb-3">
-                                Customer Reviews
-                            </h2>
-                            {product.reviews && product.reviews.length > 0 ? (
-                                <div className="space-y-3">
-                                    {product.reviews.map((review) => (
-                                        <div
-                                            key={review.id}
-                                            className="bg-gray-50 p-3 rounded-lg border border-gray-200"
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <p className="text-gray-900 text-sm font-medium">
-                                                    {review.user}
-                                                </p>
-                                                <p className="text-yellow-400 text-xs">
-                                                    ★ {review.rating}/5
-                                                </p>
-                                            </div>
-                                            <p className="text-gray-600 text-sm mt-1">
-                                                {review.comment}
-                                            </p>
-                                            <p className="text-gray-500 text-xs mt-1">
-                                                {new Date(review.date).toLocaleDateString("en-US", {
-                                                    year: "numeric",
-                                                    month: "long",
-                                                    day: "numeric",
-                                                })}
-                                            </p>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p className="text-gray-500 text-sm">No reviews yet.</p>
-                            )}
-                        </div>
+                        {/* Reviews Component */}
+                        <ProductReviews product={product} />
 
                         {/* Action Buttons */}
                         <div className="mt-6 flex gap-3">

@@ -85,7 +85,7 @@ function cartReducer(state: CartState, action: Action): CartState {
                                 canAdd = false;
                             }
                             if (v.quantity > 0) {
-                                return { ...v, quantity: v.quantity - 1 };
+                                return { ...v, quantity: v.quantity };
                             }
                         }
                         return v;
@@ -198,12 +198,15 @@ function cartReducer(state: CartState, action: Action): CartState {
         }
 
         case "ADJUST_QUANTITY": {
-            const item = state.cartItems.find((i) => i.product.id === action.id);
+            const item = state.cartItems.find(
+                (i) =>
+                    i.product.id === action.id &&
+                    isSameAttributes(i.product.selectedAttributes, action.selectedAttributes)
+            );
             const product = state.products.find((p) => p.id === action.id);
             if (!item || !product) {
                 return state;
             }
-            console.log("Action quantity : ", action.quantity);
             const quantityDiff = action.quantity - item.quantity;
             if (action.quantity > product.stock + item.quantity) {
                 return state;
@@ -211,7 +214,10 @@ function cartReducer(state: CartState, action: Action): CartState {
             return {
                 ...state,
                 cartItems: state.cartItems.map((i) => {
-                    if (i.product.id === action.id) {
+                    if (
+                        i.product.id === action.id &&
+                        isSameAttributes(i.product.selectedAttributes, action.selectedAttributes)
+                    ) {
                         return { ...i, quantity: action.quantity };
                     }
                     return i;

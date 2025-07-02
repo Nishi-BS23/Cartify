@@ -30,8 +30,6 @@ export default function ProductDetail({ params }: ProductDetailProps) {
 
     // Handle attribute selection
     const handleAttributeSelect = (attribute: string, value: string) => {
-        console.log("Atrribute --> ", attribute);
-        console.log("Value--->", value);
         setSelectedAttributes((prev) => ({
             ...prev,
             [attribute]: value,
@@ -41,12 +39,13 @@ export default function ProductDetail({ params }: ProductDetailProps) {
     // Check if all required attributes are selected
     const areAttributesSelected = () => {
         const requiredAttributes = Object.keys(product.attributes || {});
-        return requiredAttributes.find((attr) => selectedAttributes.hasOwnProperty(attr));
+        return requiredAttributes.find((attr) =>
+            selectedAttributes.hasOwnProperty(attr)
+        );
     };
 
     // Dispatch ADD_TO_CART with selected attributes
     const handleAddToCart = () => {
-        console.log("Selected ---> ", selectedAttributes);
         if (areAttributesSelected()) {
             dispatch({
                 type: "ADD_TO_CART",
@@ -62,7 +61,11 @@ export default function ProductDetail({ params }: ProductDetailProps) {
     };
 
     // Helper to get cart quantity for a product+attribute
-    const getCartQuantityForAttribute = (productId: string, attribute: string, value: string) => {
+    const getCartQuantityForAttribute = (
+        productId: string,
+        attribute: string,
+        value: string
+    ) => {
         return state.cartItems.reduce((sum, item) => {
             if (
                 item.product.id === productId &&
@@ -86,6 +89,7 @@ export default function ProductDetail({ params }: ProductDetailProps) {
                     Back to Products
                 </Link>
 
+                {/* Product Detail Card */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white rounded-xl shadow-lg overflow-hidden">
                     {/* Product Image */}
                     <div className="relative">
@@ -102,19 +106,31 @@ export default function ProductDetail({ params }: ProductDetailProps) {
                     {/* Product Details */}
                     <div className="p-6 space-y-4">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{product.name}</h1>
+                            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+                                {product.name}
+                            </h1>
                             <p className="text-gray-600 mt-1 text-base">{product.category}</p>
                         </div>
 
                         <div className="flex items-center gap-3">
-                            <span className="text-3xl font-bold text-gray-900">${product.price}</span>
+                            <span className="text-3xl font-bold text-gray-900">
+                                ${product.price}
+                            </span>
                             {product.originalPrice && (
-                                <span className="text-lg text-gray-500 line-through">${product.originalPrice}</span>
-                            )}
-                            {product.originalPrice && (
-                                <span className="text-green-600 font-semibold">
-                                    -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% Off
-                                </span>
+                                <>
+                                    <span className="text-lg text-gray-500 line-through">
+                                        ${product.originalPrice}
+                                    </span>
+                                    <span className="text-green-600 font-semibold">
+                                        -
+                                        {Math.round(
+                                            ((product.originalPrice - product.price) /
+                                                product.originalPrice) *
+                                            100
+                                        )}
+                                        % Off
+                                    </span>
+                                </>
                             )}
                         </div>
 
@@ -122,11 +138,17 @@ export default function ProductDetail({ params }: ProductDetailProps) {
                             <p className="text-gray-700 text-sm">
                                 Stock:{" "}
                                 <span
-                                    className={product.stock >= 1 ? "text-green-600 font-medium" : "text-red-600 font-medium"}
+                                    className={
+                                        product.stock >= 1
+                                            ? "text-green-600 font-medium"
+                                            : "text-red-600 font-medium"
+                                    }
                                 >
                                     {product.stock} available
                                 </span>
-                                {product.stock <= 2 && <span className="text-red-600 ml-1">Almost sold out!</span>}
+                                {product.stock <= 2 && (
+                                    <span className="text-red-600 ml-1">Almost sold out!</span>
+                                )}
                             </p>
                         </div>
 
@@ -139,9 +161,6 @@ export default function ProductDetail({ params }: ProductDetailProps) {
                             handleAttributeSelect={handleAttributeSelect}
                             getCartQuantityForAttribute={getCartQuantityForAttribute}
                         />
-
-                        {/* Reviews Component */}
-                        <ProductReviews product={product} />
 
                         {/* Action Buttons */}
                         <div className="mt-6 flex gap-3">
@@ -173,6 +192,9 @@ export default function ProductDetail({ params }: ProductDetailProps) {
                         </div>
                     </div>
                 </div>
+
+                {/* Customer Reviews Section Below the Card */}
+                <ProductReviews product={product} />
             </div>
         </main>
     );
